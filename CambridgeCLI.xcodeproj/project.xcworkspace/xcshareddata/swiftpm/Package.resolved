@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "z80",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/timsneath/z80.git",
+      "state" : {
+        "branch" : "swift",
+        "revision" : "d6e4eb32f550e716b005855f2020f1f334312ef7"
+      }
+    }
+  ],
+  "version" : 2
+}

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6CD3E8002A382921003D3B81 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CD3E7FF2A382921003D3B81 /* main.swift */; };
+		6CD3E8082A382A4F003D3B81 /* z80 in Frameworks */ = {isa = PBXBuildFile; productRef = 6CD3E8072A382A4F003D3B81 /* z80 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,11 @@
 /* Begin PBXFileReference section */
 		6CD3E7FC2A382921003D3B81 /* CambridgeCLI */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = CambridgeCLI; sourceTree = BUILT_PRODUCTS_DIR; };
 		6CD3E7FF2A382921003D3B81 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		6CD3E8092A382A95003D3B81 /* zexdoc.com */ = {isa = PBXFileReference; lastKnownFileType = file; path = zexdoc.com; sourceTree = "<group>"; };
+		6CD3E80B2A382ABD003D3B81 /* zexall.com */ = {isa = PBXFileReference; lastKnownFileType = file; path = zexall.com; sourceTree = "<group>"; };
+		6CD3E80C2A382ABD003D3B81 /* zexdoc.z80 */ = {isa = PBXFileReference; lastKnownFileType = text; path = zexdoc.z80; sourceTree = "<group>"; };
+		6CD3E80D2A382ABD003D3B81 /* zexall.z80 */ = {isa = PBXFileReference; lastKnownFileType = text; path = zexall.z80; sourceTree = "<group>"; };
+		6CD3E80E2A382ABD003D3B81 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +38,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6CD3E8082A382A4F003D3B81 /* z80 in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -57,9 +64,22 @@
 		6CD3E7FE2A382921003D3B81 /* CambridgeCLI */ = {
 			isa = PBXGroup;
 			children = (
+				6CD3E80A2A382A9F003D3B81 /* zex */,
 				6CD3E7FF2A382921003D3B81 /* main.swift */,
 			);
 			path = CambridgeCLI;
+			sourceTree = "<group>";
+		};
+		6CD3E80A2A382A9F003D3B81 /* zex */ = {
+			isa = PBXGroup;
+			children = (
+				6CD3E80E2A382ABD003D3B81 /* LICENSE */,
+				6CD3E80B2A382ABD003D3B81 /* zexall.com */,
+				6CD3E80D2A382ABD003D3B81 /* zexall.z80 */,
+				6CD3E80C2A382ABD003D3B81 /* zexdoc.z80 */,
+				6CD3E8092A382A95003D3B81 /* zexdoc.com */,
+			);
+			path = zex;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -78,6 +98,9 @@
 			dependencies = (
 			);
 			name = CambridgeCLI;
+			packageProductDependencies = (
+				6CD3E8072A382A4F003D3B81 /* z80 */,
+			);
 			productName = CambridgeCLI;
 			productReference = 6CD3E7FC2A382921003D3B81 /* CambridgeCLI */;
 			productType = "com.apple.product-type.tool";
@@ -106,6 +129,9 @@
 				Base,
 			);
 			mainGroup = 6CD3E7F32A382921003D3B81;
+			packageReferences = (
+				6CD3E8062A382A4F003D3B81 /* XCRemoteSwiftPackageReference "z80" */,
+			);
 			productRefGroup = 6CD3E7FD2A382921003D3B81 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -284,6 +310,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6CD3E8062A382A4F003D3B81 /* XCRemoteSwiftPackageReference "z80" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/timsneath/z80.git";
+			requirement = {
+				branch = swift;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6CD3E8072A382A4F003D3B81 /* z80 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6CD3E8062A382A4F003D3B81 /* XCRemoteSwiftPackageReference "z80" */;
+			productName = z80;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6CD3E7F42A382921003D3B81 /* Project object */;
 }
