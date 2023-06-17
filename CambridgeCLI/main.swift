@@ -2,11 +2,12 @@
 //  main.swift
 //  CambridgeCLI
 //
-// Runs the ZEXDOC and ZEXALL test suites.
+//  Runs the ZEXDOC and ZEXALL test suites.
 //
 //  Created by Tim Sneath on 6/12/23.
 //
 
+import Darwin.C
 import Foundation
 import z80
 
@@ -15,6 +16,20 @@ let cyclesPerStep = cpuSpeed / 50
 let maxStringLength = 100
 
 var isDone: Bool = false
+
+setbuf(__stdoutp, nil);
+
+func printCharacterAndFlush(_ character: String) {
+    print(character, terminator: "")
+    fflush(stdout)
+}
+
+func printDisassembly() {
+    let bytes = Array(z80.memory.read(origin: z80.pc, length: 4))
+    let address = z80.pc.toHex
+    let disassembly = Disassembler.disassembleInstruction(bytes)
+    print("[\(address)] \(disassembly.byteCode.padRight(toLength: 11)) \(disassembly.disassembly)")
+}
 
 /// The test suite uses two CP/M BDOS calls, which we emulate here. Per
 /// https://www.seasip.info/Cpm/bdos.html, to make a CP/M system call, you load C
@@ -30,13 +45,13 @@ func emulate(_ file: URL) {
     print("Testing \(file.lastPathComponent)...")
 
     // Load file into memory, starting at 0x100
-    z80.pc = 0x100
     guard let data = try? Data(contentsOf: file) else {
+        print("Couldn't load data")
         return
     }
-    data.forEach {
-        z80.memory.writeByte(z80.pc, $0)
-        z80.pc += 1
+    let dataAsBytes = [UInt8](data)
+    for idx in 0..<dataAsBytes.count {
+        z80.memory.writeByte(UInt16(idx+0x100), dataAsBytes[idx])
     }
     z80.pc = 0x100
 
@@ -49,9 +64,11 @@ func emulate(_ file: URL) {
     z80.memory.writeByte(5, 0xdb) /* IN A, (00h) */
     z80.memory.writeByte(6, 0x00)
     z80.memory.writeByte(7, 0xc9) /* RET */
+    print(z80.pc)
 
     // First member of ZEXTEST is state, so this is safe.
     repeat {
+//        printDisassembly()
         _ = z80.executeNextInstruction()
         total += 1
     } while !isDone
@@ -64,7 +81,9 @@ func emulate(_ file: URL) {
 func portRead(_ port: UInt16) -> UInt8 {
     switch z80.c {
         case 2:
-            print(String(bytes: [z80.e], encoding: .ascii) ?? "", terminator: "")
+            let char = String(bytes: [z80.e], encoding: .ascii) ?? ""
+            printCharacterAndFlush(char)
+
             return 0
         case 9:
             var charCount = 0
@@ -74,7 +93,7 @@ func portRead(_ port: UInt16) -> UInt8 {
                 let char = String(bytes: [z80.memory.readByte(addr)], encoding: .ascii) ?? " "
                 if char == "$" || charCount >= maxStringLength { break }
                 charCount += 1
-                print(char, terminator: "")
+                printCharacterAndFlush(char)
             }
 
             return 0
@@ -90,7 +109,7 @@ func portWrite(_ addr: UInt16, _ value: UInt8) {
 
 print("Hello, World!")
 var z80 = Z80(portRead: portRead, portWrite: portWrite)
-let file = URL(filePath: "/Users/timsneath/src/swift/CambridgeCLI/CambridgeCLI/zex/zexdoc.z80")
+let file = URL(filePath: "/Users/timsneath/src/swift/CambridgeCLI/CambridgeCLI/zex/zexdoc.com")
 let start = Date()
 emulate(file)
 let stop = Date()
