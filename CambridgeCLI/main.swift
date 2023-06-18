@@ -7,7 +7,6 @@
 //  Created by Tim Sneath on 6/12/23.
 //
 
-import Darwin.C
 import Foundation
 import z80
 
@@ -17,11 +16,8 @@ let maxStringLength = 100
 
 var isDone: Bool = false
 
-setbuf(__stdoutp, nil);
-
-func printCharacterAndFlush(_ character: String) {
+func printCharacter(_ character: String) {
     print(character, terminator: "")
-    fflush(stdout)
 }
 
 func printDisassembly() {
@@ -50,8 +46,8 @@ func emulate(_ file: URL) {
         return
     }
     let dataAsBytes = [UInt8](data)
-    for idx in 0..<dataAsBytes.count {
-        z80.memory.writeByte(UInt16(idx+0x100), dataAsBytes[idx])
+    for idx in 0 ..< dataAsBytes.count {
+        z80.memory.writeByte(UInt16(idx + 0x100), dataAsBytes[idx])
     }
     z80.pc = 0x100
 
@@ -82,7 +78,7 @@ func portRead(_ port: UInt16) -> UInt8 {
     switch z80.c {
         case 2:
             let char = String(bytes: [z80.e], encoding: .ascii) ?? ""
-            printCharacterAndFlush(char)
+            printCharacter(char)
 
             return 0
         case 9:
@@ -93,7 +89,7 @@ func portRead(_ port: UInt16) -> UInt8 {
                 let char = String(bytes: [z80.memory.readByte(addr)], encoding: .ascii) ?? " "
                 if char == "$" || charCount >= maxStringLength { break }
                 charCount += 1
-                printCharacterAndFlush(char)
+                printCharacter(char)
             }
 
             return 0
@@ -108,7 +104,7 @@ func portWrite(_ addr: UInt16, _ value: UInt8) {
 }
 
 print("Hello, World!")
-var z80 = Z80(portRead: portRead, portWrite: portWrite)
+var z80 = Z80(memory: Memory<UInt16>(sizeInBytes: 65536), portRead: portRead, portWrite: portWrite)
 let file = URL(filePath: "/Users/timsneath/src/swift/CambridgeCLI/CambridgeCLI/zex/zexdoc.com")
 let start = Date()
 emulate(file)
