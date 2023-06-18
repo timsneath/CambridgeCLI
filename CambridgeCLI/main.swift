@@ -60,14 +60,13 @@ func emulate(_ file: URL) {
     z80.memory.writeByte(5, 0xdb) /* IN A, (00h) */
     z80.memory.writeByte(6, 0x00)
     z80.memory.writeByte(7, 0xc9) /* RET */
-    print(z80.pc)
 
     // First member of ZEXTEST is state, so this is safe.
     repeat {
-        printDisassembly()
+//        printDisassembly()
         _ = z80.executeNextInstruction()
         total += 1
-        if total == 100 { isDone = true }
+//        if total == 100 { isDone = true }
     } while !isDone
     print("\n\(total) cycle(s) emulated.\n" +
         "For a Z80 running at \(cpuSpeed / 1000000)MHz, " +
@@ -78,33 +77,33 @@ func emulate(_ file: URL) {
 func portRead(_ port: UInt16) -> UInt8 {
     switch z80.c {
         case 2:
-            let char = String(bytes: [z80.e], encoding: .ascii) ?? ""
+            // print ASCII character in register E to screen
+            let char = String(bytes: [z80.e], encoding: .ascii)!
             printCharacter(char)
 
             return 0
         case 9:
-            var charCount = 0
-            var addr = z80.de
-            do {
-                addr += 1
-                let char = String(bytes: [z80.memory.readByte(addr)], encoding: .ascii) ?? " "
-                if char == "$" || charCount >= maxStringLength { break }
-                charCount += 1
-                printCharacter(char)
+            // print a dollar-terminated string at memory address pointed to by DE
+            let addr = z80.de
+            var stringToPrint = ""
+            for charCount in 0 ..< maxStringLength {
+                let charAsByte = z80.memory.readByte(addr &+ UInt16(charCount))
+                let char = String(bytes: [charAsByte], encoding: .ascii)!
+                if char == "$" { break }
+                stringToPrint += char
             }
+            print(stringToPrint)
 
             return 0
         default:
             return 0
     }
-    return 0
 }
 
 func portWrite(_ addr: UInt16, _ value: UInt8) {
     isDone = true
 }
 
-print("Hello, World!")
 var z80 = Z80(memory: Memory<UInt16>(sizeInBytes: 65536), portRead: portRead, portWrite: portWrite)
 let file = URL(filePath: "/Users/timsneath/src/swift/CambridgeCLI/CambridgeCLI/zex/zexdoc.com")
 let start = Date()
