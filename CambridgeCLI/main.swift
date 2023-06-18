@@ -64,9 +64,10 @@ func emulate(_ file: URL) {
 
     // First member of ZEXTEST is state, so this is safe.
     repeat {
-//        printDisassembly()
+        printDisassembly()
         _ = z80.executeNextInstruction()
         total += 1
+        if total == 100 { isDone = true }
     } while !isDone
     print("\n\(total) cycle(s) emulated.\n" +
         "For a Z80 running at \(cpuSpeed / 1000000)MHz, " +
