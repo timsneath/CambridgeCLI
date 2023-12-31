@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/timsneath/z80.git",
       "state" : {
-        "branch" : "swift",
-        "revision" : "83703aa5af513faf9d7fd07121c502101b2bff63"
+        "branch" : "main",
+        "revision" : "f9b9e9aef4257843b5da4c33924f71a8cc721334"
       }
     }
   ],
